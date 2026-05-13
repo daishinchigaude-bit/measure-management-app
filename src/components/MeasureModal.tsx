@@ -71,53 +71,69 @@ const MeasureModal = ({ measure, isEditing, onSave, onDelete, onEdit, onClose }:
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">
-            {measure ? (isEditing ? '施策編集' : '施策詳細') : '新規施策追加'}
-          </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">×</button>
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/50 p-4 backdrop-blur-sm"
+      style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '24px' }}
+    >
+      <div
+        className="mx-auto w-full max-w-3xl rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900"
+        style={{ width: '100%', maxWidth: '720px', background: 'white', borderRadius: '16px', padding: '32px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
+              {measure ? (isEditing ? '施策を編集' : '施策詳細') : '新しい施策を追加'}
+            </h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              下記の項目を入力・更新して、施策の状態を管理します。
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-full border border-slate-200 px-3 py-2 text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+          >
+            閉じる
+          </button>
         </div>
 
         {isEditing ? (
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <form onSubmit={handleSubmit} className="mt-6 space-y-6">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium mb-1">施策の名前</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">施策の名前</label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleChange('title', e.target.value)}
-                  className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">依頼者の名前</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">依頼者の名前</label>
                 <input
                   type="text"
                   value={formData.requester}
                   onChange={(e) => handleChange('requester', e.target.value)}
-                  className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">担当者</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">担当者</label>
                 <input
                   type="text"
                   value={formData.assignee}
                   onChange={(e) => handleChange('assignee', e.target.value)}
-                  className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">優先度</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">優先度</label>
                 <select
                   value={formData.priority}
                   onChange={(e) => handleChange('priority', e.target.value as '高' | '中' | '低')}
-                  className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 >
                   <option value="高">高</option>
                   <option value="中">中</option>
@@ -125,11 +141,11 @@ const MeasureModal = ({ measure, isEditing, onSave, onDelete, onEdit, onClose }:
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">ステータス</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">ステータス</label>
                 <select
                   value={formData.status}
                   onChange={(e) => handleChange('status', e.target.value as Measure['status'])}
-                  className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 >
                   <option value="未着手">未着手</option>
                   <option value="進行中">進行中</option>
@@ -139,95 +155,142 @@ const MeasureModal = ({ measure, isEditing, onSave, onDelete, onEdit, onClose }:
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">予想工期</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">予想工期</label>
                 <input
                   type="text"
                   value={formData.estimated_duration}
                   onChange={(e) => handleChange('estimated_duration', e.target.value)}
-                  className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">実際の工期</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">実際の工期</label>
                 <input
                   type="text"
                   value={formData.actual_duration}
                   onChange={(e) => handleChange('actual_duration', e.target.value)}
-                  className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 />
               </div>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">問題点</label>
-              <textarea
-                value={formData.problem}
-                onChange={(e) => handleChange('problem', e.target.value)}
-                className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-                rows={3}
-              />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">問題点</label>
+                <textarea
+                  value={formData.problem}
+                  onChange={(e) => handleChange('problem', e.target.value)}
+                  className="mt-2 h-28 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">システムの内容</label>
+                <textarea
+                  value={formData.system_detail}
+                  onChange={(e) => handleChange('system_detail', e.target.value)}
+                  className="mt-2 h-28 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                />
+              </div>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">システムの内容</label>
-              <textarea
-                value={formData.system_detail}
-                onChange={(e) => handleChange('system_detail', e.target.value)}
-                className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-                rows={3}
-              />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">効果</label>
+                <textarea
+                  value={formData.effect}
+                  onChange={(e) => handleChange('effect', e.target.value)}
+                  className="mt-2 h-28 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">備考</label>
+                <textarea
+                  value={formData.notes}
+                  onChange={(e) => handleChange('notes', e.target.value)}
+                  className="mt-2 h-28 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                />
+              </div>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">効果</label>
-              <textarea
-                value={formData.effect}
-                onChange={(e) => handleChange('effect', e.target.value)}
-                className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-                rows={3}
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">備考</label>
-              <textarea
-                value={formData.notes}
-                onChange={(e) => handleChange('notes', e.target.value)}
-                className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-                rows={3}
-              />
-            </div>
-
-            <div className="flex gap-2">
-              <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                保存
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button type="submit" className="rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">
+                保存する
               </button>
               {measure && (
-                <button type="button" onClick={onDelete} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-                  削除
+                <button type="button" onClick={onDelete} className="rounded-full bg-red-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-600">
+                  削除する
                 </button>
               )}
             </div>
           </form>
         ) : (
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div><strong>施策の名前:</strong> {measure?.title}</div>
-              <div><strong>依頼者の名前:</strong> {measure?.requester}</div>
-              <div><strong>担当者:</strong> {measure?.assignee}</div>
-              <div><strong>優先度:</strong> {measure?.priority}</div>
-              <div><strong>ステータス:</strong> {measure?.status}</div>
-              <div><strong>予想工期:</strong> {measure?.estimated_duration}</div>
-              <div><strong>実際の工期:</strong> {measure?.actual_duration}</div>
-              <div><strong>最終更新日:</strong> {measure?.last_updated}</div>
+          <div className="mt-6 space-y-6">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">施策の名前</p>
+                <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{measure?.title}</p>
+              </div>
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">担当者</p>
+                <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{measure?.assignee}</p>
+              </div>
             </div>
-            <div className="mb-4"><strong>問題点:</strong> {measure?.problem}</div>
-            <div className="mb-4"><strong>システムの内容:</strong> {measure?.system_detail}</div>
-            <div className="mb-4"><strong>効果:</strong> {measure?.effect}</div>
-            <div className="mb-4"><strong>備考:</strong> {measure?.notes}</div>
-            <button onClick={onEdit} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-              編集
-            </button>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">依頼者</p>
+                <p className="mt-2 text-base text-slate-900 dark:text-slate-100">{measure?.requester || '未設定'}</p>
+              </div>
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">優先度</p>
+                <p className="mt-2 text-base text-slate-900 dark:text-slate-100">{measure?.priority}</p>
+              </div>
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">ステータス</p>
+                <p className="mt-2 text-base text-slate-900 dark:text-slate-100">{measure?.status}</p>
+              </div>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">予想工期</p>
+                <p className="mt-2 text-base text-slate-900 dark:text-slate-100">{measure?.estimated_duration || '-'}</p>
+              </div>
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">実際の工期</p>
+                <p className="mt-2 text-base text-slate-900 dark:text-slate-100">{measure?.actual_duration || '-'}</p>
+              </div>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">最終更新日</p>
+                <p className="mt-2 text-base text-slate-900 dark:text-slate-100">{measure?.last_updated || '-'}</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">問題点</p>
+                <p className="mt-2 text-base text-slate-900 dark:text-slate-100">{measure?.problem || '-'}</p>
+              </div>
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">システムの内容</p>
+                <p className="mt-2 text-base text-slate-900 dark:text-slate-100">{measure?.system_detail || '-'}</p>
+              </div>
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">効果</p>
+                <p className="mt-2 text-base text-slate-900 dark:text-slate-100">{measure?.effect || '-'}</p>
+              </div>
+              <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">備考</p>
+                <p className="mt-2 text-base text-slate-900 dark:text-slate-100">{measure?.notes || '-'}</p>
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={onEdit}
+                className="rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+              >
+                編集する
+              </button>
+            </div>
           </div>
         )}
       </div>

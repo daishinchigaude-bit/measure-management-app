@@ -1,30 +1,40 @@
+import { useState } from 'react'
 import type { Measure } from '../types/measure'
 
-// 優先度の色を取得
+const statusBorderColors: Record<string, string> = {
+  '未着手': '#8B9467',
+  '進行中': '#4573D2',
+  'レビュー中': '#9B59B6',
+  '完了': '#2ECC71',
+  '保留': '#E67E22',
+}
+
 const getPriorityColor = (priority: string) => {
   switch (priority) {
-    case '高': return 'bg-red-500'
-    case '中': return 'bg-yellow-500'
-    case '低': return 'bg-green-500'
-    default: return 'bg-gray-500'
+    case '高': return 'bg-red-500/90 text-white'
+    case '中': return 'bg-yellow-400 text-slate-900'
+    case '低': return 'bg-emerald-500/90 text-white'
+    default: return 'bg-slate-400 text-white'
   }
 }
 
-// ステータスの色を取得
 const getStatusColor = (status: string) => {
   switch (status) {
-    case '未着手': return 'bg-gray-500'
-    case '進行中': return 'bg-blue-500'
-    case 'レビュー中': return 'bg-purple-500'
-    case '完了': return 'bg-green-500'
-    case '保留': return 'bg-orange-500'
-    default: return 'bg-gray-500'
+    case '未着手': return 'bg-slate-400 text-white'
+    case '進行中': return 'bg-sky-500 text-white'
+    case 'レビュー中': return 'bg-violet-500 text-white'
+    case '完了': return 'bg-emerald-500 text-white'
+    case '保留': return 'bg-orange-500 text-white'
+    default: return 'bg-slate-400 text-white'
   }
 }
 
-// アバターの初期を取得
 const getInitials = (name: string) => {
-  return name.charAt(0).toUpperCase()
+  const parts = name.trim().split(' ')
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+  }
+  return name.slice(0, 2).toUpperCase()
 }
 
 interface MeasureCardProps {
@@ -33,24 +43,69 @@ interface MeasureCardProps {
 }
 
 const MeasureCard = ({ measure, onClick }: MeasureCardProps) => {
+  const [hovered, setHovered] = useState(false)
+  const borderColor = statusBorderColors[measure.status] || '#9ca3af'
+
   return (
     <div
-      className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
       onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: 'white',
+        borderRadius: '10px',
+        borderLeft: `4px solid ${borderColor}`,
+        padding: '18px 20px',
+        cursor: 'pointer',
+        boxShadow: hovered
+          ? '0 8px 20px rgba(0,0,0,0.12)'
+          : '0 1px 3px rgba(0,0,0,0.06)',
+        transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
+        transition: 'box-shadow 0.2s ease, transform 0.2s ease',
+      }}
     >
-      <h3 className="text-lg font-semibold mb-2">{measure.title}</h3>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-2">
+      <div style={{ marginBottom: '14px' }}>
+        <p style={{ fontSize: '16px', fontWeight: 600, color: '#111827', margin: 0, lineHeight: 1.4 }}>
+          {measure.title}
+        </p>
+        <p style={{ marginTop: '6px', fontSize: '12px', color: '#6b7280', margin: '6px 0 0 0' }}>
+          最終更新: {measure.last_updated || '未設定'}
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              background: '#4573D2',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '13px',
+              fontWeight: 600,
+              flexShrink: 0,
+            }}
+          >
             {getInitials(measure.assignee)}
           </div>
-          <span className="text-sm">{measure.assignee}</span>
+          <div style={{ minWidth: 0 }}>
+            <p style={{ fontSize: '13px', fontWeight: 500, color: '#111827', margin: 0 }}>{measure.assignee}</p>
+            <p style={{ fontSize: '11px', color: '#6b7280', margin: 0 }}>担当者</p>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <span className={`px-2 py-1 text-xs text-white rounded ${getPriorityColor(measure.priority)}`}>
+        <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+          <span
+            className={`whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${getPriorityColor(measure.priority)}`}
+          >
             {measure.priority}
           </span>
-          <span className={`px-2 py-1 text-xs text-white rounded ${getStatusColor(measure.status)}`}>
+          <span
+            className={`whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${getStatusColor(measure.status)}`}
+          >
             {measure.status}
           </span>
         </div>

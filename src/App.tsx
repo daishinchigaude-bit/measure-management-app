@@ -125,89 +125,272 @@ function App() {
     return acc
   }, {} as Record<string, Measure[]>)
 
+  const statusColors: Record<string, string> = {
+    '未着手': '#8B9467',
+    '進行中': '#4573D2',
+    'レビュー中': '#9B59B6',
+    '完了': '#2ECC71',
+    '保留': '#E67E22',
+  }
+
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <header className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-3xl font-bold">施策管理</h1>
+    <div className="min-h-screen bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+      <nav
+        className="bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-700 shadow-sm"
+        style={{ padding: '0 32px' }}
+      >
+        <div
+          style={{
+            maxWidth: '1280px',
+            margin: '0 auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '64px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #4573D2 0%, #2563eb 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontWeight: 700,
+                fontSize: '14px',
+              }}
+            >
+              施
+            </div>
+            <span
+              className="text-slate-900 dark:text-slate-100"
+              style={{ fontSize: '18px', fontWeight: 700, letterSpacing: '-0.01em' }}
+            >
+              施策管理
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded"
+              className="border border-slate-300 bg-white text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              style={{
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: 500,
+                cursor: 'pointer',
+              }}
             >
-              {darkMode ? 'ライトモード' : 'ダークモード'}
+              {darkMode ? 'ライト' : 'ダーク'}
+            </button>
+            <button
+              onClick={handleAddNew}
+              style={{
+                padding: '8px 18px',
+                borderRadius: '8px',
+                border: 'none',
+                background: '#4573D2',
+                color: 'white',
+                fontSize: '14px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                boxShadow: '0 1px 3px rgba(69,115,210,0.3)',
+              }}
+            >
+              + 新規施策
             </button>
           </div>
+        </div>
+      </nav>
 
-          {/* ステータスサマリー */}
-          <div className="flex gap-4 mb-4">
-            {Object.entries(statusCounts).map(([status, count]) => (
-              <div key={status} className="text-sm">
-                {status}: {count}
-              </div>
-            ))}
-          </div>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '32px' }}>
+        <header style={{ marginBottom: '32px' }}>
+          <h1
+            className="text-slate-900 dark:text-slate-100"
+            style={{ fontSize: '28px', fontWeight: 700, margin: 0, letterSpacing: '-0.02em' }}
+          >
+            チーム施策の進捗を一元管理
+          </h1>
+          <p
+            className="text-slate-500 dark:text-slate-400"
+            style={{ marginTop: '8px', fontSize: '14px' }}
+          >
+            ステータス・担当者・優先度で絞り込み、カードから詳細をすばやく確認・編集できます。
+          </p>
+        </header>
 
-          {/* タブ */}
-          <div className="flex gap-4 mb-4">
+        <div
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px', marginBottom: '24px' }}
+        >
+          {['未着手', '進行中', 'レビュー中', '完了', '保留'].map((status) => (
+            <div
+              key={status}
+              className="bg-white dark:bg-slate-800 shadow-sm"
+              style={{
+                borderLeft: `4px solid ${statusColors[status]}`,
+                borderRadius: '8px',
+                padding: '16px 20px',
+              }}
+            >
+              <p
+                className="text-slate-500 dark:text-slate-400"
+                style={{ fontSize: '13px', margin: 0, fontWeight: 500 }}
+              >
+                {status}
+              </p>
+              <p
+                className="text-slate-900 dark:text-slate-100"
+                style={{ marginTop: '8px', fontSize: '28px', fontWeight: 700, margin: '8px 0 0 0' }}
+              >
+                {statusCounts[status] || 0}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div
+          className="bg-white dark:bg-slate-800 shadow-sm"
+          style={{
+            borderRadius: '12px',
+            padding: '20px',
+            marginBottom: '24px',
+          }}
+        >
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
             <button
               onClick={() => setActiveTab('list')}
-              className={`px-4 py-2 rounded ${activeTab === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+              className={
+                activeTab === 'list'
+                  ? 'text-white'
+                  : 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200'
+              }
+              style={{
+                padding: '8px 18px',
+                borderRadius: '6px',
+                border: 'none',
+                background: activeTab === 'list' ? '#4573D2' : undefined,
+                fontSize: '14px',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
             >
               一覧ビュー
             </button>
             <button
               onClick={() => setActiveTab('assignee')}
-              className={`px-4 py-2 rounded ${activeTab === 'assignee' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+              className={
+                activeTab === 'assignee'
+                  ? 'text-white'
+                  : 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200'
+              }
+              style={{
+                padding: '8px 18px',
+                borderRadius: '6px',
+                border: 'none',
+                background: activeTab === 'assignee' ? '#4573D2' : undefined,
+                fontSize: '14px',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
             >
               担当者ビュー
             </button>
           </div>
-
-          {/* フィルターと検索 */}
-          <div className="flex flex-wrap gap-4 mb-4">
-            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+            <div style={{ flex: '1 1 240px', minWidth: '240px' }}>
+              <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            </div>
             <FilterBar filters={filters} onChange={setFilters} measures={measures} />
-            <button
-              onClick={handleAddNew}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              + 新規施策を追加
-            </button>
           </div>
-        </header>
+          <div
+            className="text-slate-500 dark:text-slate-400"
+            style={{ marginTop: '12px', fontSize: '13px' }}
+          >
+            {filteredMeasures.length} 件の施策が表示中（全 {measures.length} 件）
+          </div>
+        </div>
 
-        {/* コンテンツ */}
-        {activeTab === 'list' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredMeasures.map(measure => (
-              <MeasureCard
-                key={measure.id}
-                measure={measure}
-                onClick={() => handleCardClick(measure)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-8">
-            {Object.entries(groupedByAssignee).map(([assignee, measures]) => (
-              <div key={assignee}>
-                <h2 className="text-xl font-semibold mb-4">{assignee} の施策</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {measures.map(measure => (
-                    <MeasureCard
-                      key={measure.id}
-                      measure={measure}
-                      onClick={() => handleCardClick(measure)}
-                    />
-                  ))}
-                </div>
+        <div
+          className="bg-white dark:bg-slate-800 shadow-sm"
+          style={{
+            borderRadius: '12px',
+            padding: '24px',
+          }}
+        >
+          {activeTab === 'list' ? (
+            filteredMeasures.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3" style={{ display: 'grid', gap: '16px' }}>
+                {filteredMeasures.map(measure => (
+                  <MeasureCard
+                    key={measure.id}
+                    measure={measure}
+                    onClick={() => handleCardClick(measure)}
+                  />
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            ) : (
+              <div
+                className="border-2 border-dashed border-slate-300 text-slate-500 dark:border-slate-700 dark:text-slate-400"
+                style={{
+                  borderRadius: '12px',
+                  padding: '48px 24px',
+                  textAlign: 'center',
+                }}
+              >
+                <p style={{ fontSize: '18px', fontWeight: 600, margin: 0 }}>検索結果はありません</p>
+                <p style={{ marginTop: '8px', margin: '8px 0 0 0' }}>フィルター条件を確認するか、新しい施策を追加してください。</p>
+              </div>
+            )
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+              {Object.entries(groupedByAssignee).map(([assignee, measures]) => (
+                <div key={assignee}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+                    <div>
+                      <p
+                        className="text-slate-500 dark:text-slate-400"
+                        style={{ fontSize: '13px', margin: 0 }}
+                      >
+                        担当者
+                      </p>
+                      <h2
+                        className="text-slate-900 dark:text-slate-100"
+                        style={{ fontSize: '20px', fontWeight: 700, margin: '4px 0 0 0' }}
+                      >
+                        {assignee}
+                      </h2>
+                    </div>
+                    <div
+                      className="bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200"
+                      style={{
+                        padding: '6px 14px',
+                        borderRadius: '999px',
+                        fontSize: '13px',
+                        fontWeight: 500,
+                      }}
+                    >
+                      {measures.length} 件の施策
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3" style={{ display: 'grid', gap: '16px' }}>
+                    {measures.map(measure => (
+                      <MeasureCard
+                        key={measure.id}
+                        measure={measure}
+                        onClick={() => handleCardClick(measure)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-        {/* 詳細モーダル */}
         {isModalOpen && (
           <MeasureModal
             measure={selectedMeasure}

@@ -1,44 +1,59 @@
 import { supabase } from './supabase'
 import type { Measure } from '../types/measure'
 
+// 初期データ投入の重複実行を防ぐためのモジュール内ガード
+// React StrictModeにより useEffect が2回実行されても1度しか走らないようにする
+let initPromise: Promise<void> | null = null
+
 // 初期データを挿入する関数
-export const insertInitialData = async () => {
-  const initialData: Omit<Measure, 'id' | 'created_at'>[] = [
-    {
-      title: '経理自動化システム',
-      assignee: '山田',
-      priority: '高',
-      status: '進行中',
-      last_updated: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-    },
-    {
-      title: '営業管理システム',
-      assignee: '中',
-      priority: '中',
-      status: '進行中',
-      last_updated: new Date().toISOString().split('T')[0],
-    },
-    {
-      title: '新人研修マニュアル・チャットボット',
-      assignee: '茂原',
-      priority: '中',
-      status: '未着手',
-      last_updated: new Date().toISOString().split('T')[0],
-    },
-  ]
+export const insertInitialData = async (): Promise<void> => {
+  if (initPromise) return initPromise
 
-  // 既存データをチェック
-  const { data: existing, error } = await supabase.from('measures').select('id')
+  initPromise = (async () => {
+    // まず既存データ件数をチェック
+    const { count, error: countError } = await supabase
+      .from('measures')
+      .select('*', { count: 'exact', head: true })
 
-  if (error) {
-    console.error('Error checking initial data:', error)
-    return
-  }
+    if (countError) {
+      console.error('Error checking initial data:', countError)
+      return
+    }
 
-  // データが0件のときのみ初期投入
-  if (!existing || existing.length === 0) {
-    await supabase.from('measures').insert(initialData)
-  }
+    // 既にデータが存在する場合はスキップ
+    if ((count ?? 0) > 0) return
+
+    const initialData: Omit<Measure, 'id' | 'created_at'>[] = [
+      {
+        title: '経理自動化システム',
+        assignee: '山田',
+        priority: '高',
+        status: '進行中',
+        last_updated: new Date().toISOString().split('T')[0],
+      },
+      {
+        title: '営業管理システム',
+        assignee: '中',
+        priority: '中',
+        status: '進行中',
+        last_updated: new Date().toISOString().split('T')[0],
+      },
+      {
+        title: '新人研修マニュアル・チャットボット',
+        assignee: '茂原',
+        priority: '中',
+        status: '未着手',
+        last_updated: new Date().toISOString().split('T')[0],
+      },
+    ]
+
+    const { error: insertError } = await supabase.from('measures').insert(initialData)
+    if (insertError) {
+      console.error('Error inserting initial data:', insertError)
+    }
+  })()
+
+  return initPromise
 }
 
 // 施策データを取得する関数

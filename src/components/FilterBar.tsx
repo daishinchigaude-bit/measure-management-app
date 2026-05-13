@@ -11,19 +11,20 @@ interface FilterBarProps {
 }
 
 const FilterBar = ({ filters, onChange, measures }: FilterBarProps) => {
-  // ユニークな担当者を取得
   const assignees = Array.from(new Set(measures.map(m => m.assignee)))
 
   const handleChange = (key: keyof typeof filters, value: string) => {
     onChange({ ...filters, [key]: value })
   }
 
+  const selectClass = "h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 sm:w-auto sm:min-w-[160px]"
+
   return (
-    <div className="flex gap-4">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:flex lg:flex-none lg:items-center">
       <select
         value={filters.assignee}
         onChange={(e) => handleChange('assignee', e.target.value)}
-        className="px-3 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+        className={selectClass}
       >
         <option value="">担当者: すべて</option>
         {assignees.map(assignee => (
@@ -34,7 +35,7 @@ const FilterBar = ({ filters, onChange, measures }: FilterBarProps) => {
       <select
         value={filters.priority}
         onChange={(e) => handleChange('priority', e.target.value)}
-        className="px-3 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+        className={selectClass}
       >
         <option value="">優先度: すべて</option>
         <option value="高">高</option>
@@ -45,7 +46,7 @@ const FilterBar = ({ filters, onChange, measures }: FilterBarProps) => {
       <select
         value={filters.status}
         onChange={(e) => handleChange('status', e.target.value)}
-        className="px-3 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+        className={selectClass}
       >
         <option value="">ステータス: すべて</option>
         <option value="未着手">未着手</option>
